@@ -13,6 +13,8 @@ class MainViewModel : ViewModel() {
 
     var forecastLiveData: MutableLiveData<Resource<BankRequest>> = MutableLiveData()
 
+    var needAPiRequest = true
+
     private val repo = Repo()
 
     fun updateData() {

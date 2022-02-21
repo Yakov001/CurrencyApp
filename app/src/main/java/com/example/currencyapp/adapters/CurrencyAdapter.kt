@@ -28,7 +28,7 @@ class CurrencyAdapter(private var dataSet: List<Currency>? = null) :
     }
 
     override fun getItemCount(): Int {
-        return dataSet?.size ?: 50
+        return dataSet?.size ?: 0
     }
 
     fun setData(dataSet: List<Currency>) {

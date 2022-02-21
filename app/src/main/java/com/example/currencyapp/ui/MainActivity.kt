@@ -2,7 +2,9 @@ package com.example.currencyapp.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
+import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 class MainActivity : AppCompatActivity() {
 
     private val adapter = CurrencyAdapter()
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,21 +29,37 @@ class MainActivity : AppCompatActivity() {
             it.layoutManager = LinearLayoutManager(this)
         }
 
-        viewModel = MainViewModel()
-
         updateButton.setOnClickListener {
             viewModel.updateData()
+            if (!viewModel.needAPiRequest) showSnackbar()
         }
 
         viewModel.forecastLiveData.observe(this, Observer {
+            Log.d("observe triggered", "liveData observe triggered")
             when (it) {
-                is Success -> adapter.setData(it.data!!.Valute.currencies)
-                is Error -> Snackbar.make(
-                    findViewById(R.id.coordinator),
-                    it.message!!,
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                is Success -> {
+                    adapter.setData(it.data!!.Valute.currencies)
+                    if (viewModel.needAPiRequest) showSnackbar()
+                }
+                is Error -> showSnackbar(it.message!!)
             }
         })
+
+        if (viewModel.needAPiRequest) viewModel.updateData()
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.needAPiRequest = false
+    }
+
+    private fun showSnackbar(message: String = "Updated") {
+        Snackbar.make(
+            findViewById(R.id.coordinator),
+            message,
+            Snackbar.LENGTH_SHORT
+        ).show()
+    }
+
 }
+
