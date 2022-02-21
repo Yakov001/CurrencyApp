@@ -1,7 +1,7 @@
 package com.example.currencyapp.model
 
 data class Currency(
-    val abbreviation: String,
+    var abbreviation: String = "",
     val CharCode: String,
     val ID: String,
     val Name: String,
@@ -9,5 +9,4 @@ data class Currency(
     val NumCode: String,
     val Previous: Double,
     val Value: Double
-
 )

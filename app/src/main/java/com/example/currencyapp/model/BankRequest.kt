@@ -5,5 +5,5 @@ data class BankRequest(
     val PreviousDate: String,
     val PreviousURL: String,
     val Timestamp: String,
-    val currencies: List<Currency>
+    val Valute: Valute
 )

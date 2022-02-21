@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.forecastLiveData.observe(this, Observer {
-            adapter.setData(it.currencies)
+            adapter.setData(it.Valute.currencies)
         })
     }
 }
