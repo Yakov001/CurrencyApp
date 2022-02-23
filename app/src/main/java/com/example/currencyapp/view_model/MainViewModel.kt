@@ -6,10 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.currencyapp.model.BankRequest
 import com.example.currencyapp.retrofit.Repo
+import com.example.currencyapp.room.AppDatabase
 import com.example.currencyapp.utils.Resource
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val db: AppDatabase) : ViewModel() {
 
     var forecastLiveData: MutableLiveData<Resource<BankRequest>> = MutableLiveData()
 
@@ -27,6 +28,7 @@ class MainViewModel : ViewModel() {
                 return@launch
             }
             forecastLiveData.value = Resource.Success(response.body()!!)
+            db.getCurrencyDao().insertAll(response.body()!!.Valute.currencies)
         }
     }
 }
