@@ -1,6 +1,5 @@
 package com.example.currencyapp.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -11,7 +10,7 @@ import com.example.currencyapp.model.Currency
 interface CurrencyDao {
 
     @Query("SELECT * FROM currencies")
-    fun getAll(): LiveData<List<Currency>>
+    suspend fun getAll(): List<Currency>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(list: List<Currency>)

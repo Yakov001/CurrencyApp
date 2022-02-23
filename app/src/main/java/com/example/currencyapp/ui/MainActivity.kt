@@ -1,10 +1,9 @@
 package com.example.currencyapp.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,7 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.currencyapp.R
 import com.example.currencyapp.adapters.CurrencyAdapter
 import com.example.currencyapp.room.AppDatabase
-import com.example.currencyapp.utils.Resource.*
+import com.example.currencyapp.utils.Resource.Error
+import com.example.currencyapp.utils.Resource.Success
 import com.example.currencyapp.view_model.MainViewModel
 import com.example.currencyapp.view_model.MainViewModelFactory
 import com.google.android.material.snackbar.Snackbar
@@ -38,17 +38,20 @@ class MainActivity : AppCompatActivity() {
 
         updateButton.setOnClickListener {
             viewModel.updateData()
-            if (!viewModel.needAPiRequest) showSnackbar()
+            if (!viewModel.needAPiRequest) showSnackbar(viewModel.forecastLiveData.value?.message)
         }
 
         viewModel.forecastLiveData.observe(this, Observer {
             Log.d("observe triggered", "liveData observe triggered")
             when (it) {
                 is Success -> {
-                    adapter.setData(it.data!!.Valute.currencies)
+                    adapter.setData(it.data!!)
                     if (viewModel.needAPiRequest) showSnackbar()
                 }
-                is Error -> showSnackbar(it.message!!)
+                is Error -> {
+                    if (!it.data.isNullOrEmpty()) adapter.setData(it.data)
+                    if (viewModel.needAPiRequest) showSnackbar(it.message!!)
+                }
             }
         })
 
@@ -60,10 +63,10 @@ class MainActivity : AppCompatActivity() {
         viewModel.needAPiRequest = false
     }
 
-    private fun showSnackbar(message: String = "Updated") {
+    private fun showSnackbar(message: String? = "Updated") {
         Snackbar.make(
             findViewById(R.id.coordinator),
-            message,
+            message ?: "Updated",
             Snackbar.LENGTH_SHORT
         ).show()
     }
