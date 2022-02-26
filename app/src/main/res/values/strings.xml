@@ -4,4 +4,6 @@
     <string name="update">update</string>
     <string name="convert">Convert</string>
     <string name="rub">RUB</string>
+    <string name="cur_long_name_mock">Австралийский доллар пажилой</string>
+    <string name="_34">34</string>
 </resources>

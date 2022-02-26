@@ -12,7 +12,10 @@ class CurrencyAdapter(private var dataSet: List<Currency>? = null) :
     RecyclerView.Adapter<CurrencyAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val currencyAbbrevTextView : TextView = view.findViewById(R.id.currency_abbrev)
         val currencyTextView : TextView = view.findViewById(R.id.currency_text)
+        val currencyAmount : TextView = view.findViewById(R.id.currency_amount)
+        val currencyRate : TextView = view.findViewById(R.id.currency_rate)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,7 +26,10 @@ class CurrencyAdapter(private var dataSet: List<Currency>? = null) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (dataSet != null) {
-           holder.currencyTextView.text = dataSet!![position].abbreviation
+            holder.currencyAbbrevTextView.text = dataSet!![position].abbreviation
+            holder.currencyTextView.text = dataSet!![position].Name
+            "${dataSet!![position].Nominal}  ".also { holder.currencyAmount.text = it }
+            holder.currencyRate.text = String.format("%.2f",dataSet!![position].Value)
         }
     }
 

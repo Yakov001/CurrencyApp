@@ -16,10 +16,9 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/bottom_bar"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/bottom_bar"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/bottom_bar"
@@ -30,44 +29,56 @@
             android:orientation="horizontal"
             android:background="@color/teal_200"
             android:gravity="center_vertical"
-            >
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp">
+
             <Button
                 android:text="@string/update"
                 android:id="@+id/update_currencies"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"/>
+                android:layout_marginRight="32dp"
+                />
 
             <EditText
                 android:id="@+id/edit_text_1"
                 android:inputType="numberDecimal"
                 android:minWidth="40dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
 
             <TextView
                 android:id="@+id/currency_1"
                 android:text="@string/rub"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"/>
 
             <Button
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@drawable/round_button"/>
+                android:background="@drawable/round_button"
+                />
 
             <EditText
                 android:id="@+id/edit_text_2"
                 android:inputType="numberDecimal"
                 android:minWidth="40dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
 
             <TextView
                 android:id="@+id/currency_2"
                 android:text="@string/rub"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
