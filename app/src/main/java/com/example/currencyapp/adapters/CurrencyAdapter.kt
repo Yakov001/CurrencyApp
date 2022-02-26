@@ -11,17 +11,27 @@ import com.example.currencyapp.model.Currency
 class CurrencyAdapter(private var dataSet: List<Currency>? = null) :
     RecyclerView.Adapter<CurrencyAdapter.ViewHolder>() {
 
+    private var nowSelecting = false
+
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val currencyAbbrevTextView : TextView = view.findViewById(R.id.currency_abbrev)
-        val currencyTextView : TextView = view.findViewById(R.id.currency_text)
-        val currencyAmount : TextView = view.findViewById(R.id.currency_amount)
-        val currencyRate : TextView = view.findViewById(R.id.currency_rate)
+        val currencyAbbrevTextView: TextView = view.findViewById(R.id.currency_abbrev)
+        val currencyTextView: TextView = view.findViewById(R.id.currency_text)
+        val currencyAmount: TextView = view.findViewById(R.id.currency_amount)
+        val currencyRate: TextView = view.findViewById(R.id.currency_rate)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.recycler_view_item, parent, false)
-        return ViewHolder(view)
+        var view: View? = null
+        when (viewType) {
+            0 -> view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.recycler_view_item, parent, false)
+            1 -> {
+                view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.recycler_view_item_shadow, parent, false)
+                view.isClickable = true
+            }
+        }
+        return ViewHolder(view!!)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -29,7 +39,11 @@ class CurrencyAdapter(private var dataSet: List<Currency>? = null) :
             holder.currencyAbbrevTextView.text = dataSet!![position].abbreviation
             holder.currencyTextView.text = dataSet!![position].Name
             "${dataSet!![position].Nominal}  ".also { holder.currencyAmount.text = it }
-            holder.currencyRate.text = String.format("%.2f",dataSet!![position].Value)
+            holder.currencyRate.text = String.format("%.2f", dataSet!![position].Value)
+
+            if (nowSelecting) holder.itemView.setOnClickListener {
+
+            }
         }
     }
 
@@ -37,8 +51,17 @@ class CurrencyAdapter(private var dataSet: List<Currency>? = null) :
         return dataSet?.size ?: 0
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return if (nowSelecting) 1 else 0
+    }
+
     fun setData(dataSet: List<Currency>) {
         this.dataSet = dataSet
+        notifyDataSetChanged()
+    }
+
+    fun setSelectable(selectable: Boolean = false) {
+        nowSelecting = selectable
         notifyDataSetChanged()
     }
 }

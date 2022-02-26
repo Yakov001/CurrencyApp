@@ -13,8 +13,11 @@ import kotlinx.coroutines.launch
 class MainViewModel(private val db: AppDatabase) : ViewModel() {
 
     var forecastLiveData: MutableLiveData<Resource<List<Currency>>> = MutableLiveData()
+    var converterResult: MutableLiveData<Double?> = MutableLiveData()
+    val nowSelecting: MutableLiveData<Boolean> = MutableLiveData(false)
 
     var needAPiRequest = true
+    var selectedCurrency: Currency? = null
 
     private val repo = Repo()
 
@@ -43,10 +46,5 @@ class MainViewModel(private val db: AppDatabase) : ViewModel() {
             forecastLiveData.value = Resource.Success(response.body()!!.Valute.currencies)
             db.getCurrencyDao().insertAll(response.body()!!.Valute.currencies)
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        db.close()
     }
 }
