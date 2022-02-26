@@ -15,9 +15,9 @@ class MainViewModel(private val db: AppDatabase) : ViewModel() {
     var forecastLiveData: MutableLiveData<Resource<List<Currency>>> = MutableLiveData()
     var converterResult: MutableLiveData<Double?> = MutableLiveData()
     val nowSelecting: MutableLiveData<Boolean> = MutableLiveData(false)
+    var selectedCurrency: MutableLiveData<Currency> = MutableLiveData()
 
     var needAPiRequest = true
-    var selectedCurrency: Currency? = null
 
     private val repo = Repo()
 

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.currencyapp.R
 import com.example.currencyapp.adapters.CurrencyAdapter
+import com.example.currencyapp.model.Currency
 import com.example.currencyapp.room.AppDatabase
 import com.example.currencyapp.utils.Resource.Error
 import com.example.currencyapp.utils.Resource.Success
@@ -20,18 +21,24 @@ import com.example.currencyapp.view_model.MainViewModel
 import com.example.currencyapp.view_model.MainViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CurrencyAdapter.OnCurrencySelectedListener {
 
-    private val adapter = CurrencyAdapter()
+    private val adapter = CurrencyAdapter(null, this)
     lateinit var viewModel: MainViewModel
+
+    private lateinit var inputTextView: TextView
+    private lateinit var updateButton: Button
+    private lateinit var resultTextView: TextView
+    private lateinit var pickCurButton: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val updateButton: Button = findViewById(R.id.update_currencies)
-        val resultTextView: TextView = findViewById(R.id.edit_text_2)
-        val pickCurButton: TextView = findViewById(R.id.currency_2)
+        updateButton = findViewById(R.id.update_currencies)
+        resultTextView = findViewById(R.id.edit_text_2)
+        pickCurButton = findViewById(R.id.currency_2)
+        inputTextView = findViewById<EditText>(R.id.edit_text_1)
 
         viewModel = ViewModelProvider(
             this,
@@ -62,17 +69,21 @@ class MainActivity : AppCompatActivity() {
             }
         })
         viewModel.converterResult.observe(this, Observer {
-            resultTextView.text = it?.toString() ?: ""
+            resultTextView.text = if (it == null) ""
+            else String.format("%.2f", it)
         })
         viewModel.nowSelecting.observe(this, Observer {
             adapter.setSelectable(it)
         })
+        viewModel.selectedCurrency.observe(this, Observer {
+            pickCurButton.text = it.abbreviation
+        })
 
         if (viewModel.needAPiRequest) viewModel.updateData()
 
-        findViewById<EditText>(R.id.edit_text_1).doOnTextChanged { text, _, _, _ ->
-            val rate = viewModel.selectedCurrency?.Value ?: 1.0
-            val amount = viewModel.selectedCurrency?.Nominal ?: 1
+        inputTextView.doOnTextChanged { text, _, _, _ ->
+            val rate = viewModel.selectedCurrency.value?.Value ?: 1.0
+            val amount = viewModel.selectedCurrency.value?.Nominal ?: 1
             val input = text.toString().toDoubleOrNull()
 
             if (input == null) viewModel.converterResult.value = null
@@ -95,6 +106,20 @@ class MainActivity : AppCompatActivity() {
             message ?: "Updated",
             Snackbar.LENGTH_SHORT
         ).show()
+    }
+
+    override fun onCurrencySelected(currency: Currency) {
+        viewModel.selectedCurrency.value = currency
+
+        val isSelecting = viewModel.nowSelecting.value ?: true
+        viewModel.nowSelecting.value = !isSelecting
+
+        val rate = viewModel.selectedCurrency.value?.Value ?: 1.0
+        val amount = viewModel.selectedCurrency.value?.Nominal ?: 1
+        val input = inputTextView.text.toString().toDoubleOrNull()
+
+        if (input == null) viewModel.converterResult.value = null
+        else viewModel.converterResult.value = input * rate / amount
     }
 
 }

@@ -8,8 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.currencyapp.R
 import com.example.currencyapp.model.Currency
 
-class CurrencyAdapter(private var dataSet: List<Currency>? = null) :
+class CurrencyAdapter(private var dataSet: List<Currency>? = null, private val listener: OnCurrencySelectedListener) :
     RecyclerView.Adapter<CurrencyAdapter.ViewHolder>() {
+
+    interface OnCurrencySelectedListener {
+        fun onCurrencySelected(currency: Currency)
+    }
 
     private var nowSelecting = false
 
@@ -42,7 +46,7 @@ class CurrencyAdapter(private var dataSet: List<Currency>? = null) :
             holder.currencyRate.text = String.format("%.2f", dataSet!![position].Value)
 
             if (nowSelecting) holder.itemView.setOnClickListener {
-
+                listener.onCurrencySelected(dataSet!![position])
             }
         }
     }
